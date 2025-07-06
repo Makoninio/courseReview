@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Course Review Aggregator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="container">
+    <h1>Find Professors</h1>
+
+    <!-- ✅ Search form -->
+    <form id="search-form">
+      <input type="text" name="name" placeholder="Professor name" />
+      <input type="text" name="department" placeholder="Department" />
+      <input type="number" name="min_rating" min="0" max="5" step="0.1" placeholder="Min Rating" />
+      <button type="submit">Search</button>
+    </form>
+
+    <!-- Professors List -->
+    <div id="professor-list">
+      {% for prof in professors %}
+        <div class="card">
+          <h2>{{ prof.name }}</h2>
+          <p><strong>Department:</strong> {{ prof.department }}</p>
+          <p class="rating">⭐ {{ prof.rating }}</p>
+          {% if prof.review %}
+            <p class="review">{{ prof.review }}</p>
+          {% else %}
+            <p class="review"><em>No reviews available.</em></p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+
+  <!-- ✅ Your JavaScript goes HERE -->
+  <script>
+    document.getElementById('search-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const queryString = new URLSearchParams(formData).toString();
+
+      fetch('/search?' + queryString)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('professor-list');
+          container.innerHTML = '';
+          if (data.length === 0) {
+            container.innerHTML = '<p>No results found.</p>';
+            return;
+          }
+
+          data.forEach(prof => {
+            container.innerHTML += `
+              <div class="card">
+                <h2>${prof.name}</h2>
+                <p>${prof.department}</p>
+                <p>⭐ ${prof.rating}</p>
+                <p>${prof.review}</p>
+              </div>`;
+          });
+        });
+    });
+  </script>
+
+</body>
+</html>

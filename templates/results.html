@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Professor Reviews</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <h1>Results</h1>
+  {% for prof in professors %}
+    <h2>{{ prof.name }} ({{ prof.department }})</h2>
+    <p>Rating: {{ prof.rating }}</p>
+    <p>Tags: {{ prof.tags | join(', ') }}</p>
+    <ul>
+      {% for review in prof.reviews %}
+        <li>{{ review }}</li>
+      {% endfor %}
+    </ul>
+    <hr>
+  {% endfor %}
+</body>
+</html>
